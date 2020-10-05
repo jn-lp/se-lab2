@@ -1,6 +1,10 @@
 package lab2
 
-import "regexp"
+import (
+	"errors"
+	"fmt"
+	"regexp"
+)
 
 type astNode struct {
 	left *astNode
@@ -17,7 +21,7 @@ func isNumber(char string) bool {
 	return res
 }
 
-func astFromPostfix(expr string) *astNode {
+func astFromPostfix(expr string) (*astNode, error) {
 	var stack [] *astNode
 	var operand = ""
 	for i:=0; i<len(expr); i++	{
@@ -29,16 +33,24 @@ func astFromPostfix(expr string) *astNode {
 				stack = append(stack, &astNode{nil, nil, operand})
 				operand = ""
 			}
-			if isOperator(char) && len(stack) >= 2 {
-				stack[len(stack)-2] = &astNode {stack[len(stack)-2], stack[len(stack)-1], char}
-				stack = stack[:len(stack) - 1]
+			if isOperator(char) {
+				if len(stack) >= 2 {
+					stack[len(stack)-2] = &astNode {stack[len(stack)-2], stack[len(stack)-1], char}
+					stack = stack[:len(stack) - 1]
+				} else {
+					return &astNode{nil, nil, ""},
+					fmt.Errorf("binary operator '%s' at position %d misused(not enough arguments)", char, i + 1)
+				}
 			}
 		}
 	}
 	if len(stack) >= 1 {
-		return stack[len(stack) - 1]
+		return stack[len(stack) - 1], nil
 	}
-	return &astNode{nil, nil, ""}
+	if len(operand) > 0 {
+		return &astNode{nil, nil, operand}, nil
+	}
+	return &astNode{nil, nil, ""}, errors.New("no expression root found")
 }
 
 func operatorPriority(op string) int {
@@ -65,6 +77,10 @@ func (node *astNode) toInfix() string {
 }
 
 // TODO: document this function.
-func PostfixToInfix(expr string) string {
-	return astFromPostfix(expr).toInfix()
+func ToInfix(expr string) (string, error) {
+	ast, err := astFromPostfix(expr)
+	if err != nil {
+		return "", err
+	}
+	return ast.toInfix(), nil
 }
