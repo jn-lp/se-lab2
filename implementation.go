@@ -77,7 +77,7 @@ func (node *astNode) toInfix() string {
 }
 
 // TODO: document this function.
-func ToInfix(expr string) (string, error) {
+func PostfixToInfix(expr string) (string, error) {
 	ast, err := astFromPostfix(expr)
 	if err != nil {
 		return "", err
