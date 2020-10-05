@@ -82,5 +82,6 @@ func PostfixToInfix(expr string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return ast.toInfix(), nil
+// Example for test to fail
+	return "Wrong string", nil
 }
