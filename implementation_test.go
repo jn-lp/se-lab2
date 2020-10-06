@@ -8,11 +8,11 @@ import (
 )
 
 func TestPostfixToInfix(t *testing.T) {
-    res, err := PostfixToInfix("1")
+	res, err := PostfixToInfix("1")
 	if assert.Nil(t, err) {
 		assert.Equal(t, "1", res)
 	}
-    res, err = PostfixToInfix("1 2 +")
+	res, err = PostfixToInfix("1 2 +")
 	if assert.Nil(t, err) {
 		assert.Equal(t, "1+2", res)
 	}
