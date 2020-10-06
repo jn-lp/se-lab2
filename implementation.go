@@ -20,6 +20,10 @@ func isNumber(char string) bool {
 	res, _ := regexp.MatchString("([0-9])", char)
 	return res
 }
+func isWhitespace(char string) bool {
+	res, _ := regexp.MatchString("([\\s])", char)
+	return res
+}
 
 func astFromPostfix(expr string) (*astNode, error) {
 	var stack [] *astNode
@@ -41,6 +45,9 @@ func astFromPostfix(expr string) (*astNode, error) {
 					return &astNode{nil, nil, ""},
 					fmt.Errorf("binary operator '%s' at position %d misused(not enough arguments)", char, i + 1)
 				}
+			} else if !isWhitespace(char) {
+				return &astNode{nil, nil, ""},
+				fmt.Errorf("character '%s' at position %d can't be interpreted", char, i + 1)
 			}
 		}
 	}

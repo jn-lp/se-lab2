@@ -24,6 +24,10 @@ func TestPostfixToInfix(t *testing.T) {
 	if assert.Nil(t, err) {
 		assert.Equal(t, "(((1+2-3)*4/5)^6+7-8)*9/10", res)
 	}
+	res, err = PostfixToInfix("1 @ +")
+	if !assert.NotNil(t, err) {
+		t.Fatal("Wrong character error not implemented")
+	}
 	res, err = PostfixToInfix("1 +")
 	if !assert.NotNil(t, err) {
 		t.Fatal("Unary operator error not implemented")
