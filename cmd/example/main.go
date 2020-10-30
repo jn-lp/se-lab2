@@ -34,17 +34,14 @@ func main() {
 
 	var input io.Reader
 
-	if *inputExpression != "" {
-		input = strings.NewReader(*inputExpression)
-	} else if *inputFile != "" {
+	if *inputFile != "" {
 		input, err = os.Open(*inputFile)
 		if err != nil {
 			fmt.Fprintln(os.Stderr, "Unable to open file:", err)
 			return
 		}
 	} else {
-		fmt.Fprintln(os.Stderr, "No input specified")
-		return
+		input = strings.NewReader(*inputExpression)
 	}
 
 	handler := &lab2.ComputeHandler{

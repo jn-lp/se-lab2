@@ -14,14 +14,9 @@ type ComputeHandler struct {
 func (ch *ComputeHandler) Compute() (err error) {
 	scanner := bufio.NewScanner(ch.Input)
 	scanner.Split(bufio.ScanLines)
-	var txtlines []string
 
 	for scanner.Scan() {
-		txtlines = append(txtlines, scanner.Text())
-	}
-
-	for _, eachline := range txtlines {
-		out, err := PostfixToInfix(eachline)
+		out, err := PostfixToInfix(scanner.Text())
 		if err != nil {
 			return err
 		}
