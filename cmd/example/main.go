@@ -3,25 +3,55 @@ package main
 import (
 	"flag"
 	"fmt"
+	"io"
+	"os"
+	"strings"
+
 	lab2 "github.com/jn-lp/se-lab2"
 )
 
 var (
 	inputExpression = flag.String("e", "", "Expression to compute")
-	// TODO: Add other flags support for input and output configuration.
+	inputFile       = flag.String("f", "", "File with expression to compute")
+	outputFile      = flag.String("o", "", "File to write result to")
 )
 
 func main() {
 	flag.Parse()
 
-	// TODO: Change this to accept input from the command line arguments as described in the task and
-	//       output the results using the ComputeHandler instance.
-	//       handler := &lab2.ComputeHandler{
-	//           Input: {construct io.Reader according the command line parameters},
-	//           Output: {construct io.Writer according the command line parameters},
-	//       }
-	//       err := handler.Compute()
+	var err error
+	var output io.Writer
 
-	res, _ := lab2.PostfixToInfix("1 2 +")
-	fmt.Println(res)
+	if *outputFile != "" {
+		output, err = os.Create(*outputFile)
+		if err != nil {
+			fmt.Fprintln(os.Stderr, "Unable to create file:", err)
+			return
+		}
+	} else {
+		output = os.Stdout
+	}
+
+	var input io.Reader
+
+	if *inputFile != "" {
+		input, err = os.Open(*inputFile)
+		if err != nil {
+			fmt.Fprintln(os.Stderr, "Unable to open file:", err)
+			return
+		}
+	} else {
+		input = strings.NewReader(*inputExpression)
+	}
+
+	handler := &lab2.ComputeHandler{
+		Input:  input,
+		Output: output,
+	}
+
+	err = handler.Compute()
+	if err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		return
+	}
 }

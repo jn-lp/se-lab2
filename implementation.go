@@ -7,7 +7,7 @@ import (
 )
 
 type astNode struct {
-	left *astNode
+	left  *astNode
 	right *astNode
 	value string
 }
@@ -26,9 +26,9 @@ func isWhitespace(char string) bool {
 }
 
 func astFromPostfix(expr string) (*astNode, error) {
-	var stack [] *astNode
+	var stack []*astNode
 	var operand = ""
-	for i:=0; i<len(expr); i++	{
+	for i := 0; i < len(expr); i++ {
 		var char = string(expr[i])
 		if isNumber(char) {
 			operand += char
@@ -39,11 +39,11 @@ func astFromPostfix(expr string) (*astNode, error) {
 			}
 			if isOperator(char) {
 				if len(stack) >= 2 {
-					stack[len(stack)-2] = &astNode {stack[len(stack)-2], stack[len(stack)-1], char}
-					stack = stack[:len(stack) - 1]
+					stack[len(stack)-2] = &astNode{stack[len(stack)-2], stack[len(stack)-1], char}
+					stack = stack[:len(stack)-1]
 				} else {
 					return &astNode{nil, nil, ""},
-					fmt.Errorf("binary operator '%s' at position %d misused(not enough arguments)", char, i + 1)
+						fmt.Errorf("binary operator '%s' at position %d misused(not enough arguments)", char, i+1)
 				}
 			} else if !isWhitespace(char) {
 				return &astNode{nil, nil, ""},
@@ -52,7 +52,7 @@ func astFromPostfix(expr string) (*astNode, error) {
 		}
 	}
 	if len(stack) >= 1 {
-		return stack[len(stack) - 1], nil
+		return stack[len(stack)-1], nil
 	}
 	if len(operand) > 0 {
 		return &astNode{nil, nil, operand}, nil
@@ -61,9 +61,15 @@ func astFromPostfix(expr string) (*astNode, error) {
 }
 
 func operatorPriority(op string) int {
-	if op == "+" || op == "-" { return 0 }
-	if op == "*" || op == "/" { return 1 }
-	if op == "^" { return 2 }
+	if op == "+" || op == "-" {
+		return 0
+	}
+	if op == "*" || op == "/" {
+		return 1
+	}
+	if op == "^" {
+		return 2
+	}
 	return -1
 }
 
